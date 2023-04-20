@@ -28,9 +28,11 @@ class _CategoriesScreenState extends State<CategoriesScreen>
 
     _animationController = AnimationController(
         vsync: this,
-        duration: const Duration(milliseconds: 300),
+        duration: const Duration(milliseconds: 800),
         lowerBound: 0,
         upperBound: 1);
+
+    _animationController.forward();
   }
 
   void _selectCategory(BuildContext context, Category category) {
@@ -50,24 +52,31 @@ class _CategoriesScreenState extends State<CategoriesScreen>
 
   @override
   Widget build(BuildContext context) {
-    return GridView(
-      padding: const EdgeInsets.all(24),
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-        childAspectRatio: 3 / 2,
-        crossAxisSpacing: 20,
-        mainAxisSpacing: 20,
-      ),
-      children: [
-        // availableCategories.map((category) => CategoryGridItem(category: category)).toList()
-        for (final category in availableCategories)
-          CategoryGridItem(
-            category: category,
-            onSelectCategory: () {
-              _selectCategory(context, category);
-            },
-          )
-      ],
-    );
+    return AnimatedBuilder(
+        animation: _animationController,
+        child: GridView(
+          padding: const EdgeInsets.all(24),
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 3 / 2,
+            crossAxisSpacing: 20,
+            mainAxisSpacing: 20,
+          ),
+          children: [
+            // availableCategories.map((category) => CategoryGridItem(category: category)).toList()
+            for (final category in availableCategories)
+              CategoryGridItem(
+                category: category,
+                onSelectCategory: () {
+                  _selectCategory(context, category);
+                },
+              )
+          ],
+        ),
+        builder: (cx, child) => Padding(
+              padding:
+                  EdgeInsets.only(top: 200 - _animationController.value * 200),
+              child: child,
+            ));
   }
 }
